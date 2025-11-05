@@ -1,4 +1,4 @@
-# TODO add processing to combine raw GeoTIFF files into a single dataset
+
 """Combine raw categorical GeoTIFF tiles into mosaics (benthic & geomorphic).
 
 Workflow (per dataset):
@@ -54,13 +54,13 @@ gdal.UseExceptions()
 DATASET_CONFIG = {
 	"benthic": {
 		"input_folder": "Raw benthic raster files",
-		"output_name": "NW_NESP-MaC-3-17_Shallow-habitat_Benthic.tif",
+		"output_name": "NW_NESP-MaC-3-17_UQ_Shallow-habitat_Benthic.tif",
 		"valid_min": 0,  # 0 = nodata
 		"valid_max": 19,
 	},
 	"geomorphic": {
 		"input_folder": "Raw geomorphic raster tiles",
-		"output_name": "NW_NESP-MaC-3-17_Shallow-habitat_Geomorphic.tif",
+		"output_name": "NW_NESP-MaC-3-17_UQ_Shallow-habitat_Geomorphic.tif",
 		"valid_min": 0,  # 0 = nodata
 		"valid_max": 27,
 	},
@@ -307,7 +307,7 @@ def process_dataset(kind: str, args) -> None:
 		raise SystemExit(f"Input directory not found: {input_dir}")
 
 	# Output directory change
-	output_dir = script_dir / "output"
+	output_dir = script_dir / "output_gpt5"
 	output_dir.mkdir(parents=True, exist_ok=True)
 	output_path = output_dir / cfg["output_name"]
 	if output_path.exists() and not args.force:
@@ -494,5 +494,3 @@ def main(argv: List[str]) -> int:
 
 if __name__ == "__main__":
 	raise SystemExit(main(sys.argv[1:]))
-
-# TODO add processing to combine raw GeoTIFF files into a single dataset in this file.
