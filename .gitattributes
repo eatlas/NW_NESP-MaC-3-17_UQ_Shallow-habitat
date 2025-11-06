@@ -1,0 +1,42 @@
+# Global Git attributes for cross-platform consistency (repository root)
+# All text files normalized to LF in the index; binaries preserved.
+
+* text eol=lf
+
+# Languages / data
+*.py      text eol=lf diff=python
+*.yml     text eol=lf
+*.yaml    text eol=lf
+*.md      text eol=lf
+*.csv     text eol=lf
+*.json    text eol=lf
+*.clr     text eol=lf
+*.txt     text eol=lf
+
+# Scripts
+*.sh      text eol=lf
+*.bash    text eol=lf
+# Uncomment to force CRLF for Windows batch scripts if added later:
+# *.bat    text eol=crlf
+# *.cmd    text eol=crlf
+
+# Geospatial / archives (binary)
+*.qgz     binary
+*.tif     binary
+*.ovr     binary
+*.zip     binary
+*.7z      binary
+*.tar     binary
+*.gz      binary
+
+# XML-ish text that should stay LF
+*.aux.xml text eol=lf
+*.svg     text eol=lf
+
+# Images
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+
+# End
