@@ -258,3 +258,13 @@ The final output map should only include pixels where there is a match between t
 
 In this repo also contains code created by claude, do not modify these files, only potentially modify 01-combine-raw-geotiffs_gpt5.py, SETUP_GPT5.md.
 
+### Follow up
+I am running this software on macOS from an external HD running exFAT. MacOS is generating ._ files that are tripping up the processing. There are files created such as '._gulf_benthic_clean2d-0000000000-0000065536.tif'. These are falsely being interpretted as GeoTiff images. Please filter out all ._ files from the processing of GeoTiff images.
+
+### Follow up
+python 01-combine-raw-geotiffs_gpt5.py
+Unzipping: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████| 5/5 [00:01<00:00,  2.93zip/s]
+Scanning benthic: 100%|█████████████████████████████████████████████████████████████████████████████████████████████| 30/30 [11:30<00:00, 23.03s/tile]
+benthic: 30 tiles, 16 non-blank, scan 11m30.9s
+Convert benthic: 100%|██████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [00:18<00:00,  1.18s/tile]
+ERROR: Band.ReadAsArray() got an unexpected keyword argument 'xsize'

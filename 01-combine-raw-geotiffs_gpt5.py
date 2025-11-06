@@ -252,7 +252,11 @@ def reclass_output(path: Path, valid_ids: set[int]) -> None:
 		rows = block_y if y + block_y <= ysize else ysize - y
 		for x in range(0, xsize, block_x):
 			cols = block_x if x + block_x <= xsize else xsize - x
-			data = band.ReadAsArray(xoff=x, yoff=y, xsize=cols, ysize=rows)
+			# NOTE: GDAL's Python API for Band.ReadAsArray uses positional args or
+			# parameter names win_xsize / win_ysize (not xsize/ysize). Using the
+			# old keyword names triggers: unexpected keyword argument 'xsize'.
+			# Use positional form for widest compatibility across GDAL versions.
+			data = band.ReadAsArray(x, y, cols, rows)
 			if data is None:
 				continue
 			mask_invalid = ~np.isin(data, list(valid_ids))
