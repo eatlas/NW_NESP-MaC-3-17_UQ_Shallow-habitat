@@ -1,8 +1,8 @@
 # Northern Australian Shallow Marine Habitat Mosaics (NESP MaC 3.17)
 
-This repository contains the final processing workflow to build authoritative benthic and geomorphic habitat mosaics for northern Australia under the NESP Marine and Coastal Hub Project 3.17. The scripts take the tiled predictive habitat model outputs (after manual QA/QC clean‑up) for five regional modelling domains and merge them into two seamless, optimized GeoTIFF datasets: one benthic classification mosaic and one geomorphic classification mosaic.
+This repository contains the final preparation workflow to build benthic and geomorphic habitat mosaics for northern Australia under the NESP Marine and Coastal Hub Project 3.17. The scripts take the tiled predictive habitat model outputs (after manual QA/QC clean‑up) for five regional modelling domains and merge them into two seamless, optimized GeoTIFF datasets: one benthic classification mosaic and one geomorphic classification mosaic. This code does not include the modelling process itself, just the data format conversion for efficient visualisation and publication and analysis scripts for creating summary statistics. 
 
-## Regional Model Domains
+## Input data - Regional Model Domains
 Each region was modelled separately (distinct tuning / training) and delivered as zip archives of categorical raster tiles (GeoTIFF):
 
 | Region key | Area | Notes |
@@ -13,15 +13,20 @@ Each region was modelled separately (distinct tuning / training) and delivered a
 | `sharkbay` | Shark Bay region | Complex embayment, seagrass & banks |
 | `west`     | WA coastline south of Shark Bay to Houtman Abrolhos | Transitional zone |
 
-Overlap occurs between some regional extents; a deterministic precedence (alphabetical by tile filename) is used when combining—"first non‑zero wins"—preserving upstream categorical assignments.
+Overlap occurs between some regional extents. When converting to a final image we use a a deterministic precedence (alphabetical by tile filename) combined with "first non‑zero value wins" when there are overlapping values from two models. 
 
-## Classification Schemes
-Two categorical products are produced:
+Each classification class is represented as the integer value assigned to each pixel. The class name, class ids (associated integer values) and default colour styles were provided in CSV files, one for the benthic mapping and one for the geomorphic mapping.
 
-1. Benthic habitat classes (0 = nodata)
-2. Geomorphic habitat classes (0 = nodata)
+One challenge was that the geomorphic mapping contained a very low number of values not included in the classification palette file.  
 
-During final processing any pixel values outside the published palettes are reclassified to 0 to ensure only sanctioned class codes remain.
+One challenge was that the geomorphic data files contained pixels values not included in the classification palette file, and the palette files (both benthic and geomorphic) contained classifications not used in the data files. Those classifications not provided in the palette file corresponded to only a tiny fraction of the mapped pixels and appear to be a by-product of some previous processing stage rather than useful data. This was cleaned up by reassigning these pixels to no data. The classification classes used in the dataset was determined by counting the number of data pixels associated with each classification. Classifications with no data pixels were dropped from the output styling.  
+
+## Output data
+These scripts generate the following output products:
+- Merged benthic GeoTiff covering the full study area - LZW compressed with internal tiling and pyramids
+- Merged geomorphic GeoTiff covering the full study area - LZW compressed with internal tiling and pyramids
+- QGIS symbology files (.clr) for setting up a Paletted/Unique Value symbology for the benthic and geomorphic data. These only include classes used in the data.
+- CSV files containing the pixel count of each classification value. These are of the raw input data. These were develop solely for determining which classification classes to retain and which data values didn't match the input palette CSVs. 
 
 ## High‑Level Processing Pipeline
 For each classification type (benthic, geomorphic):
@@ -36,31 +41,32 @@ For each classification type (benthic, geomorphic):
 8. Build mode-resampled overview pyramids (LZW compressed) to preserve categorical integrity at reduced scales.
 9. Embed metadata: DOI, license, and a `classes` list enumerating only retained codes.
 10. Output a class usage report (CSV + console table) for transparency (includes unknown codes prior to reclassification).
-11. Cleanup temporary working files unless explicitly retained.
 
 ## Dual Script Implementations (GPT‑5 vs Claude Sonnet 4.5)
-To strengthen confidence in reproducibility and detect subtle specification ambiguities, the processing workflow was implemented twice:
+Much of the processing code developed in this repository was created by LLM coding models. These were developed using Github Copilot in VSCode using Agent mode. Each script was developed twice by two different coding agents, based on the same prompt structure and approach. Double coding the processing was primarily done to allow the relative performance of GPT-5 and Claude Sonnet 4.5 to be evaluated on a real world scripting task. The secondary reason was to improve the confidence in the processed results. Specification ambiguities can lead to outputs that look OK, but contain subtle errors that are missed. By coding the processing twice using independent agents these subtle errors can be detected by comparing the double processed outputs. 
 
-| Script | File | Purpose |
-|--------|------|---------|
-| GPT‑5 implementation | `01-combine-raw-geotiffs_gpt5.py` | Primary, iteratively refined version (exact stats + reclassification) |
-| Claude Sonnet 4.5 implementation | `01-combine-raw-geotiffs_claude.py` | Independent derivation for cross‑validation |
+All prompts used to write the scripts and the follow up prompts are recorded in [PROMPT.md](PROMPT.md). This document provides traceability from the initial specification through each adjustment (tiling size change, overview method fix, classification counting, exact stats adoption, unknown code reclassification, macOS resource fork filtering).
 
 Both large language model (LLM) generated versions followed the same conceptual specification; differences surfaced areas for clarification and improvement.
 
 ## Comparison & Findings
-Early comparison highlighted a discrepancy: the initial GPT‑5 script used approximate statistics, failing to surface sparse higher geomorphic class codes absent from the loaded palette (`geo_palette.csv`). This caused under‑reporting of some class pixel counts and hid mismatches. After adopting exact statistics and full 0–255 histograms the GPT‑5 version aligned with the Claude result and enabled robust detection and reclassification of unknown values.
+Early comparison highlighted a discrepancy: the initial GPT‑5 script used approximate statistics, failing to surface sparse higher geomorphic class codes absent from the loaded palette (`geo_palette.csv`). This caused under‑reporting of some class pixel counts and hid mismatches. If undetected this would have led to a small number of stray pixels with classification values outside the defined classes. This was detected because the Claude sonnet implementation used exact statistics, resulting in a much longer class counts list. The class pixel counts also differed because of the different counting technique. After adjusting the GPT5 script to adopt exact statistics and full 0–255 histograms to ensure there were no assumptions about the maximum class value the GPT‑5 version aligned with the Claude result and enabled robust detection and reclassification of unknown values.
 
-Key outcomes:
-- Exact statistics (approx_ok=False) are essential for sparse high category detection.
-- Full histogram enumeration prevents silent omission of codes outside an expected range.
-- Re-running the specification through multiple models exposes implicit assumptions (ordering precedence, handling unknown classes, nodata enforcement) that may otherwise remain undocumented.
+### Model differences
+Both GPT-5 and Claude Sonnet 4.5 performed similarly. Both generated approximately the same amount of code, both asked similar clarification questions, both required a similar number of follow up iterations to achieve the final processing. The noted differences were:
+- GPT-5 asked more clarifying questions at the start of the process. It is unclear that these questions cover more of the umbiguity of the specifications though. 
+- Claude Sonnet is much better at generating nice looking standard out progress messages.
+- Claude made a non functional environment.yml including a pip package that couldn't be installed. Both models incorrectly handled the relative paths '../original/'. Both had a similar number of bugs that needing fixing.
 
-## Lessons Learned
-The principal source of divergence was not model capability but subtle ambiguity in the original requirements (e.g., whether to treat high unseen codes as errors, whether unknown codes should survive, and how overlap precedence should be defined). Implementing the pipeline with multiple LLMs revealed corner cases (like sparse high values) and refining the final workflow to be deterministic, transparent, and auditable.
+There was no winner. It was a draw.
 
-## Prompts & Iteration History
-A record of the prompts, follow-up clarifications, and incremental refinements is maintained in `PROMPTS.md`. This document provides traceability from the initial specification through each adjustment (tiling size change, overview method fix, classification counting, exact stats adoption, unknown code reclassification, macOS resource fork filtering).
+### Lessons Learned
+The principal source of divergence was not model capability but subtle ambiguity in the original requirements (e.g., whether to treat high unseen codes as errors, whether unknown codes should survive, and how overlap precedence should be defined). The original specification for the pixel counting was:
+> During the pass where you are checking files for zeros, calculate a count for each class_id value. At the end of processing each kind (benthic, geomorphic) output these stats. 
+
+This does not specify that the counting should be exact, although this is what I had assumed. It is common for approximate counting to be used, and so in many cases using approximate counting would have been appropriate. It is likely that the use of approximate counting would have been overlooked if there wasn't the double implementation to detect this error.
+
+Implementing the pipeline with multiple LLMs revealed corner cases (like sparse high values) and refining the final workflow to be deterministic, transparent, and auditable.
 
 ## Setup & Execution
 Environment and usage details are documented separately for each implementation:
@@ -71,7 +77,10 @@ Environment and usage details are documented separately for each implementation:
 Typical run (processing both mosaics):
 
 ```bash
+conda env create -f environment_gpt5.yml
+conda activate habitat-mosaic-gpt5
 python 01-combine-raw-geotiffs_gpt5.py
+python 01-combine-raw-geotiffs_claude.py
 ```
 
 Key operational assumptions:
@@ -83,13 +92,16 @@ Key operational assumptions:
 Unknown class IDs (those not present in the respective palette CSV) are remapped to 0 before building pyramids, ensuring derived overviews cannot retain deprecated or spurious category values. The pre‑reclass table and CSV still enumerate these unknowns for audit purposes.
 
 ## Citation & Licensing
-This processing is associated the the []'Northern Australia shallow marine benthic and geomorphic habitat mapping - (NESP MaC 3.17, UQ, UNSW, AIMS)'](https://doi.org/10.26274/qeh6-p243) dataset.
+This processing is associated the the ['Northern Australia shallow marine benthic and geomorphic habitat mapping - (NESP MaC 3.17, UQ, UNSW, AIMS)'](https://doi.org/10.26274/qeh6-p243) dataset.
 
 
 Please cite the project and DOI when using the mosaics in publications or derivative products.
 
-## Contact
-For questions regarding habitat classification methodology or project context, refer to NESP MaC documentation or contact the project maintainers.
+## Benchmarks
 
----
-Generated and iteratively refined with multiple LLM assistants to improve specification clarity and robustness.
+| Computer                   | 01-combine-raw-geotiffs_claude.py | 01-combine-raw-gpt5.py |
+|----------------------------|-----------------------------------|------------------------|
+| 11th Gen Intel i7-1185G7 @ 3.00GHz (1.80 GHz) |         1h 27m |                 2h 50m |
+| MacBook Pro M4 Max                            |            27m |                    25m |
+
+

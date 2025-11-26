@@ -25,7 +25,7 @@ gdal.UseExceptions()
 class GeoTiffProcessor:
     """Process and mosaic GeoTIFF files"""
     
-    def __init__(self, base_dir: str = "."):
+    def __init__(self, base_dir: str | Path = "."):
         self.base_dir = Path(base_dir)
         self.original_dir = self.base_dir.parent / "original"
         self.working_dir = self.base_dir / "working"
@@ -250,6 +250,9 @@ class GeoTiffProcessor:
         total_unknown_pixels = 0
         valid_class_ids = set(names.keys())
         
+        # Prepare data for CSV export
+        csv_data = []
+        
         for class_id in sorted(counts.keys()):
             count = counts[class_id]
             
@@ -266,6 +269,17 @@ class GeoTiffProcessor:
                 total_unknown_pixels += count
             
             print(f"{class_id:<10} {name:<30} {count:<20,} {status:<15}")
+            
+            # Add to CSV data
+            csv_data.append({
+                'class_id': class_id,
+                'class_name': name,
+                'count': count
+            })
+        
+        # Export to CSV
+        csv_path = self.output_dir / f"{dataset_name}_class_counts.csv"
+        self.export_class_counts_csv(csv_path, csv_data)
         
         # Create metadata string
         classes_metadata = ",".join(classes_metadata_parts)
@@ -275,10 +289,22 @@ class GeoTiffProcessor:
             print(f"WARNING: {total_unknown_pixels:,} pixels with unknown class IDs will be set to nodata (0)")
         print(f"Total valid classes (excluding nodata): {len(classes_metadata_parts)}")
         print(f"CLASSES metadata: {classes_metadata}")
+        print(f"Class counts exported to: {csv_path}")
         print(f"{'='*80}")
         
         return classes_metadata, valid_class_ids
     
+    def export_class_counts_csv(self, csv_path: Path, csv_data: List[Dict]):
+        """Export class counts to CSV file"""
+        try:
+            with open(csv_path, 'w', newline='') as f:
+                writer = csv.DictWriter(f, fieldnames=['class_id', 'class_name', 'count'])
+                writer.writeheader()
+                writer.writerows(csv_data)
+            print(f"  Class counts saved to: {csv_path.name}")
+        except Exception as e:
+            print(f"  ERROR saving class counts CSV: {e}")
+
     def patch_tiff(self, input_path: Path, output_path: Path, valid_class_ids: set):
         """
         Convert TIFF to 8-bit with nodata=0, filtering out unknown class values.
@@ -353,6 +379,9 @@ class GeoTiffProcessor:
         dataset = self.folders[dataset_name]
         patched_dir = dataset['patched']
         output_path = dataset['output']
+        
+        # Ensure output directory exists
+        output_path.parent.mkdir(parents=True, exist_ok=True)
         
         # Get all patched files
         patched_files = list(patched_dir.glob("*.tif"))
