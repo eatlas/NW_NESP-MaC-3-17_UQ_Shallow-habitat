@@ -41,8 +41,8 @@ class Config:
 	benthic_counts = BASE_DIR / "output_gpt5" / "benthic_class_counts.csv"
 	geomorphic_counts = BASE_DIR / "output_gpt5" / "geomorphic_class_counts.csv"
 	out_dir = BASE_DIR / "output_gpt5"
-	benthic_style_name = "NW_NESP-MaC-3-17_UQ_Shallow-habitat_Benthic"
-	geomorphic_style_name = "NW_NESP-MaC-3-17_UQ_Shallow-habitat_Geomorphic"
+	benthic_style_name = "NW_NESP-MaC-3-17_UQ_Shallow-habitat_Benthic_2025"
+	geomorphic_style_name = "NW_NESP-MaC-3-17_UQ_Shallow-habitat_Geomorphic_2025"
 
 
 def ensure_files_exist(paths: list[Path]):

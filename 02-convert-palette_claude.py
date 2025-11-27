@@ -232,8 +232,8 @@ def main():
         palette_file=base_dir / "Raw benthic raster files" / "benthic_palette.csv",
         counts_file=base_dir / "output_claude" / "benthic_class_counts.csv",
         output_dir=base_dir / "output_claude",
-        dataset_name="NW_NESP-MaC-3-17_UQ_Shallow-habitat_Benthic",
-        layer_name="NW_NESP-MaC-3-17_UQ_Shallow-habitat_Benthic"
+        dataset_name="NW_NESP-MaC-3-17_UQ_Shallow-habitat_Benthic_2025",
+        layer_name="NW_NESP-MaC-3-17_UQ_Shallow-habitat_Benthic_2025"
     )
     
     # Process geomorphic dataset
@@ -241,8 +241,8 @@ def main():
         palette_file=base_dir / "Raw geomorphic raster tiles" / "geo_palette.csv",
         counts_file=base_dir / "output_claude" / "geomorphic_class_counts.csv",
         output_dir=base_dir / "output_claude",
-        dataset_name="NW_NESP-MaC-3-17_UQ_Shallow-habitat_Geomorphic",
-        layer_name="NW_NESP-MaC-3-17_UQ_Shallow-habitat_Geomorphic"
+        dataset_name="NW_NESP-MaC-3-17_UQ_Shallow-habitat_Geomorphic_2025",
+        layer_name="NW_NESP-MaC-3-17_UQ_Shallow-habitat_Geomorphic_2025"
     )
     
     print("\n✓ Processing complete!")

@@ -37,14 +37,14 @@ class GeoTiffProcessor:
                 'source': self.original_dir / "Raw benthic raster files",
                 'raw': self.working_dir / "raw" / "benthic",
                 'patched': self.working_dir / "raw-patched" / "benthic",
-                'output': self.output_dir / "NW_NESP-MaC-3-17_UQ_Shallow-habitat_Benthic.tif",
+                'output': self.output_dir / "NW_NESP-MaC-3-17_UQ_Shallow-habitat_Benthic_2025.tif",
                 'palette_csv': self.original_dir / "Raw benthic raster files" / "benthic_palette.csv"
             },
             'geomorphic': {
                 'source': self.original_dir / "Raw geomorphic raster tiles",
                 'raw': self.working_dir / "raw" / "geomorphic",
                 'patched': self.working_dir / "raw-patched" / "geomorphic",
-                'output': self.output_dir / "NW_NESP-MaC-3-17_UQ_Shallow-habitat_Geomorphic.tif",
+                'output': self.output_dir / "NW_NESP-MaC-3-17_UQ_Shallow-habitat_Geomorphic_2025.tif",
                 'palette_csv': self.original_dir / "Raw geomorphic raster tiles" / "geo_palette.csv"
             }
         }

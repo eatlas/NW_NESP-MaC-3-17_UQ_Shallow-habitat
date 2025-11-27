@@ -54,13 +54,13 @@ gdal.UseExceptions()
 DATASET_CONFIG = {
 	"benthic": {
 		"input_folder": "Raw benthic raster files",
-		"output_name": "NW_NESP-MaC-3-17_UQ_Shallow-habitat_Benthic.tif",
+		"output_name": "NW_NESP-MaC-3-17_UQ_Shallow-habitat_Benthic_2025.tif",
 		"valid_min": 0,  # 0 = nodata
 		"valid_max": 19,
 	},
 	"geomorphic": {
 		"input_folder": "Raw geomorphic raster tiles",
-		"output_name": "NW_NESP-MaC-3-17_UQ_Shallow-habitat_Geomorphic.tif",
+		"output_name": "NW_NESP-MaC-3-17_UQ_Shallow-habitat_Geomorphic_2025.tif",
 		"valid_min": 0,  # 0 = nodata
 		"valid_max": 27,
 	},
