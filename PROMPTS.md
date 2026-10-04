@@ -464,11 +464,17 @@ Let me know answers (you can respond briefly, e.g. “1 yes, 2 ascending, 3 255 
 11. Abort. Key simple like just crash. 
 
 ## Bug fix:
+```
 $ python 02-convert-palette_gpt5.py 
-ERROR: Required file not found: F:\NW_NESP-MaC-3-17_UQ_Shallow-habitat\Raw benthic raster files\benthic_palette.csv
-ERROR: Required file not found: F:\NW_NESP-MaC-3-17_UQ_Shallow-habitat\Raw geomorphic raster tiles\geo_palette.csv
-(habitat-mosaic-gpt5) 
-The relative path must go up one folder and then into the original folder.
+  ERROR: Required file not found: F:\NW_NESP-MaC-3-17_UQ_Shallow-habitat\Raw benthic raster files\benthic_palette.csv
+  ERROR: Required file not found: F:\NW_NESP-MaC-3-17_UQ_Shallow-habitat\Raw geomorphic raster tiles\geo_palette.csv
+(habitat-mosaic-gpt5) The relative path must go up one folder and then into the original folder.
+```
 
 ## Filename adjustment - Manual
 The output filenames were changed to include _2025 at the end to indicate the age of the dataset (NW_NESP-MaC-3-17_UQ_Shallow-habitat_Benthic_2025, NW_NESP-MaC-3-17_UQ_Shallow-habitat_Geomorphic_2025).
+
+
+
+# 03-convert-training-to-shp.py
+I have a folder of CSV files (../original/reference_training_files/*.csv)

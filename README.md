@@ -1,6 +1,10 @@
 # Northern Australian Shallow Marine Habitat Mosaics (NESP MaC 3.17)
 
-This repository contains the final preparation workflow to build benthic and geomorphic habitat mosaics for northern Australia under the NESP Marine and Coastal Hub Project 3.17. The scripts take the tiled predictive habitat model outputs (after manual QA/QC clean‑up) for five regional modelling domains and merge them into two seamless, optimized GeoTIFF datasets: one benthic classification mosaic and one geomorphic classification mosaic. This code does not include the modelling process itself, just the data format conversion for efficient visualisation and publication and analysis scripts for creating summary statistics. 
+This repository contains the final preparation workflow to build benthic and geomorphic habitat mosaics for northern Australia under the NESP Marine and Coastal Hub Project 3.17. The scripts take the tiled predictive habitat model outputs (after manual QA/QC clean‑up) for five regional modelling domains and merge them into two seamless, optimized GeoTIFF datasets: one benthic classification mosaic and one geomorphic classification mosaic. This code does not include the modelling process itself, just the data format conversion for efficient visualisation and publication and analysis scripts for creating area summary statistics. 
+
+## Metadata
+The full metadata for this dataset can be found from: 
+Markey, K., Lyons, M., Borrego Accevedo, R., Roe, M., Lawrey, E., Phinn, S., & Roelfsema, C. (2025). Shallow benthic and geomorphic habitat maps for Northern and Western Australia (NESP MaC 3.17, UQ, UNSW, AIMS) [Data set]. eAtlas. https://doi.org/10.26274/QEH6-P243
 
 ## Input data - Regional Model Domains
 Each region was modelled separately (distinct tuning / training) and delivered as zip archives of categorical raster tiles (GeoTIFF):
@@ -49,7 +53,7 @@ All prompts used to write the scripts and the follow up prompts are recorded in 
 
 Both large language model (LLM) generated versions followed the same conceptual specification; differences surfaced areas for clarification and improvement.
 
-## Comparison & Findings
+## Double coding findings
 Early comparison highlighted a discrepancy: the initial GPT‑5 script used approximate statistics, failing to surface sparse higher geomorphic class codes absent from the loaded palette (`geo_palette.csv`). This caused under‑reporting of some class pixel counts and hid mismatches. If undetected this would have led to a small number of stray pixels with classification values outside the defined classes. This was detected because the Claude sonnet implementation used exact statistics, resulting in a much longer class counts list. The class pixel counts also differed because of the different counting technique. After adjusting the GPT5 script to adopt exact statistics and full 0–255 histograms to ensure there were no assumptions about the maximum class value the GPT‑5 version aligned with the Claude result and enabled robust detection and reclassification of unknown values.
 
 ### Model differences
@@ -69,7 +73,14 @@ This does not specify that the counting should be exact, although this is what I
 Implementing the pipeline with multiple LLMs revealed corner cases (like sparse high values) and refining the final workflow to be deterministic, transparent, and auditable.
 
 ## Setup & Execution
-Environment and usage details are documented separately for each implementation:
+The repository holds two groups of scripts:
+
+- **Publication scripts** (`01-download-input-data.py`, `01-combine-raw-geotiffs_*.py`, `02-convert-palette_*.py`, `03-convert-training-to-shp.py`) produced the published GeoTIFFs and styling files.
+- **Analysis scripts** (`A01` to `A03`) calculate summary statistics from the published GeoTIFFs. See [Habitat area statistics](#habitat-area-statistics-a01-to-a03).
+
+Both groups use the single `environment.yml`. The analysis scripts added `geopandas`, `shapely`, `pyproj` and `pandas`, and data-downloader was updated to v1.2.0. Update an existing environment with `conda env update -f environment.yml --prune`.
+
+Environment and usage details for the publication scripts are documented separately for each implementation:
 
 - GPT‑5 setup: `SETUP_GPT5.md`
 - Claude Sonnet 4.5 setup: `SETUP_Claude.md`
@@ -104,4 +115,38 @@ Please cite the project and DOI when using the mosaics in publications or deriva
 | 11th Gen Intel i7-1185G7 @ 3.00GHz (1.80 GHz) |         1h 27m |                 2h 50m |
 | MacBook Pro M4 Max                            |            27m |                    25m |
 
+# Analysis of the habitat mapping
+In this section we detail the analysis of the habitat mapping. We compare it to the Allen Coral Atlas and calculate the area of each habitat class by region.
 
+## Habitat area statistics (A01 to A03)
+These scripts calculate the area of each benthic and geomorphic class for the whole dataset and for each region of three regionalisations: the NESP 3.17 Analysis-regions, the IMCRA v4.0 Meso-scale Bioregions and CAPAD 2024 - Marine. The method is described in [A02-habitat-area-stats-spec.md](A02-habitat-area-stats-spec.md).
+
+The scripts read the published rasters from `data/out/benthic/` and `data/out/geomorphic/`. If these are missing, download the published data from the eAtlas share (https://nextcloud.eatlas.org.au/s/QBRBYaisJCgXf7g) into `data/out/`.
+
+Run order:
+
+```bash
+conda activate habitat-mosaic
+python A01-download-analysis-data.py   # regionalisations into data/in-3p/
+python A02-habitat-area-stats.py       # about 20 min, writes data/out/stats/A02_Habitat-area-stats.csv
+python A03-habitat-area-tables.py      # writes data/out/stats/A03_Habitat-area-tables_*.md
+```
+
+A02 caches each stage in `working/A02/`, so a failed run resumes where it stopped. After changing an input, delete the cache of that stage and every later stage, or delete `working/A02/` to rebuild everything. The checks are written to `working/A02/A02_checks.csv`.
+
+## Download
+To compare with the Allen Coral Atlas the following process needs to be followed:
+1. Create an account with the https://allencoralatlas.org.
+2. Download the area assests for [Western Australia](https://coral-atlas-user-downloads-prod.storage.googleapis.com/fc45f571-7d9c-478f-97eb-a20ae7818e6a/Western-Australia-20230310001457.zip) and [Timor and Arafura Seas](https://coral-atlas-user-downloads-prod.storage.googleapis.com/1dd3f53b-3ca0-44a1-b65f-eb131cae298f/Timor---Arafura-Seas-20230310000037.zip). Save and unzip these to `data/in-3p/AllenCoralAtlas/WA` and `data/in-3p/AllenCoralAtlas/Timor-Arafura`. Note: If you want to save them to a different folder, but still have the QGIS files work then use a symbolic link. 
+```batch
+mklink /D "in-3p" "C:\data-3p\NW-NESP-MaC-3-17_UQ_Shallow-habitat\in-3p"
+```
+
+## Setting up in QGIS
+To set up the new Shallow Habitat layers in QGIS the the `data\out\benthic\NW_NESP-MaC-3-17_UQ_Shallow-habitat_Benthic_2025.tif` and `data\out\NW_NESP-MaC-3-17_UQ_Shallow-habitat_Geomorphic_2025.tif` should be added to QGIS. They can then be styled using the matching `*.clr` file by using `Layer Properties > Symbology > Render type: Paletted/Unique values` the `... > Load Color Map from File ...`.
+
+## Loading PlanetLabs imagery in QGIS
+For the comparison mapping we load the Allen Coral Atlas PlanetLabs imagery into QGIS by setting up an XYZ tile service.
+- **Name**: Allen Coral Atlas PlanetLabs
+- **URL**: `https://storage.googleapis.com/production-coral-tiles/visual/coral_reefs_2020_visual_v1_mosaic/{z}/{x}/{y}.png`
+- **Tile Resolution**: Standard (256x256 / 96 DPI)

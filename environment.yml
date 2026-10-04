@@ -1,0 +1,26 @@
+name: habitat-mosaic
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - gdal>=3.8
+  - numpy>=1.24
+  - tqdm>=4.66
+  # Analysis scripts (A01 to A03)
+  - geopandas>=1.0
+  - shapely>=2.0
+  - pyproj>=3.6
+  - pandas>=2.0
+  - pip:
+    - git+https://github.com/open-AIMS/data-downloader@v1.2.0
+
+# Publication scripts only import python, gdal, numpy and tqdm.
+# GDAL pulls required compression/codec libraries transitively; no need to pin libjpeg-turbo, zstd, libiconv.
+# The analysis scripts add geopandas, shapely, pyproj and pandas for preparing the regions,
+# checking pixel areas and writing tables. data-downloader v1.2.0 is needed for file renaming.
+
+# Usage:
+#   conda env create -f environment.yml   (or: conda env update -f environment.yml --prune)
+#   conda activate habitat-mosaic
+#   python 01-combine-raw-geotiffs_claude.py
+#   python A01-download-analysis-data.py
