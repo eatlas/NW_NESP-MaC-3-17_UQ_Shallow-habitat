@@ -27,9 +27,9 @@ AREA = "Area (km²)"
 
 
 def fmt(value):
-    if value > 0 and round(value, 2) == 0:
-        return "<0.01"
-    return f"{value:,.2f}"
+    if value > 0 and round(value, 1) == 0:
+        return "<0.1"
+    return f"{value:,.1f}"
 
 
 def bold(text):
