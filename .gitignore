@@ -6,3 +6,8 @@ reference_training_files/
 output*/
 public/
 data/
+*INPUT_METRIC.md
+deprecated/*
+*ai-review*
+.VSCodeCounter/
+__pycache__/

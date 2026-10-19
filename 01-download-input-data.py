@@ -3,6 +3,13 @@ from data_downloader import DataDownloader
 # Create an instance of the DataDownloader class
 downloader = DataDownloader(download_path='data/in-3p')
 
+# ACA reference polygons are supplied in data/in-3p-mirror/ACA-ref with source
+# metadata. HA04-aca-compare/compare.py uses them for the 50 m reference exclusion.
+# Automated source links are unreliable. For original sources, citations and manual
+# download instructions, see README.md, "Mirrored third-party data and manual downloads".
+print('ACA references: use the supplied data/in-3p-mirror/ACA-ref files. '
+      'For a code-only rebuild, see README.md: Mirrored third-party data and manual downloads.')
+
 print("Downloading source data files. This will take a while ...")
 
 

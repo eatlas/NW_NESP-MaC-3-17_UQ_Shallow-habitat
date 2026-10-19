@@ -134,7 +134,40 @@ python A03-habitat-area-tables.py      # writes data/out/stats/A03_Habitat-area-
 
 A02 caches each stage in `working/A02/`, so a failed run resumes where it stopped. After changing an input, delete the cache of that stage and every later stage, or delete `working/A02/` to rebuild everything. The checks are written to `working/A02/A02_checks.csv`.
 
-## Download
+## Comparison with Allen Coral Atlas
+
+[Comparing UQ and Allen Coral Atlas shallow habitat maps](HA04-aca-compare/PAPER.md) presents the question, methods, limitations and regional results as a self-contained technical paper. It is intended for linking from the main project report. [HA04-aca-compare/README.md](HA04-aca-compare/README.md) provides reproducible commands. Only the paper's tables are supplied under `data/out/stats/HA04-aca-compare` in the dataset download. Point records, diagnostic tables and provenance are retained under `working/HA04-aca-compare`, outside the download, and can be regenerated.
+
+The comparison uses identical expert-labelled reference points outside a 50 m buffer of published ACA reference polygons and within shared map coverage. UQ agreement is higher in all ten regional comparisons, with positive conditional 5 km spatial-block intervals in nine. Because the references were supplied as UQ calibration data, this is comparative reference agreement, not independent validation of UQ. The paper records that qualification, class-specific counterexamples and sensitivity to sample selection. Use a release-commit permalink when citing the paper from the report.
+
+## Distributed data bundle
+
+The dataset data download includes `data/out`, `data/in-3p-mirror` and `data/previews`. These contain the published outputs and statistics, mirrored third-party inputs with their source metadata, and preview products, respectively. Users who obtain this data bundle do not need to retrieve the mirrored inputs again from their original providers. Keep the directory structure intact when placing the bundle alongside the scripts.
+
+The bundle does not imply that every dataset under `data/in-3p` is included. Additional inputs required to rerun an analysis must be obtained using the relevant download script or the manual instructions below. A rebuild from code alone also requires the original source data; the repository's scripts do not replace those inputs.
+
+## Mirrored third-party data and manual downloads
+
+`data/in-3p-mirror` preserves third-party inputs for which reliable programmatic downloading was not available. Copies are distributed under their source licences, with metadata retained alongside the files for attribution and provenance. These remain third-party datasets, not newly authored project data. Use the source citation and licence recorded with each dataset when reusing it.
+
+### Allen Coral Atlas reference polygons
+
+The four ACA reference datasets below are CC BY 4.0. Western Australia datasets are attributed to Borrego-Acevedo, Roelfsema and co-authors (2021); Timor Sea datasets are attributed to Tudman, Borrego-Acevedo and co-authors (2021). Full author lists and source metadata are available in the linked records and accompanying metadata. The stable DOI records identify the original sources; direct storage links have proved unreliable and are not required when using the supplied mirror.
+
+For a code-only rebuild, open each DOI record in a browser and manually download its ZIP attachment. Extract all files, including metadata and every shapefile component, into the destination below. Preserve original filenames. The named shapefile must sit directly in that destination rather than in an additional archive directory. Do not repeat these downloads if the files are already present in the distributed data bundle.
+
+| Original source | ZIP attachment | Destination under data/in-3p-mirror/ACA-ref |
+|:---|:---|:---|
+| [Western Australia Benthic Type Reference Sample, v1](https://doi.org/10.6084/m9.figshare.14622759.v1) | 20201217_WEA_Benthic.zip | WA-benthic/ |
+| [Western Australia Geomorphic Type Reference Sample, v1](https://doi.org/10.6084/m9.figshare.14622750.v1) | 20201217_WEA_Geomorphic.zip | WA-geomorphic/ |
+| [Timor Sea Benthic Type Reference Sample, v1](https://doi.org/10.6084/m9.figshare.14120894.v1) | 20200721_TIS_Benthic.zip | Timor-benthic/ |
+| [Timor Sea Geomorphic Type Reference Sample, v1](https://doi.org/10.6084/m9.figshare.14120891.v1) | 20200721_TIS_Geomorphic.zip | Timor-geomorphic/ |
+
+[HA04-aca-compare/compare.py](HA04-aca-compare/compare.py) uses the combined benthic and geomorphic reference polygons to exclude UQ reference points within 50 m of known ACA reference areas. Both map products are then compared at retained points with shared coverage. These polygons are calibration and/or validation references, not confirmed validation-only samples. Exclusion reduces known spatial overlap but does not establish independent validation of UQ. The source licences for these derived reference polygons do not automatically cover their underlying contributed field observations or imagery.
+
+[01-download-input-data.py](01-download-input-data.py) prints a reminder to consult this section instead of attempting the unreliable ACA reference downloads. It continues to download its other source datasets normally. The ACA reference polygons are separate from the ACA habitat map GeoPackages required below.
+
+## ACA map downloads
 To compare with the Allen Coral Atlas the following process needs to be followed:
 1. Create an account with the https://allencoralatlas.org.
 2. Download the area assests for [Western Australia](https://coral-atlas-user-downloads-prod.storage.googleapis.com/fc45f571-7d9c-478f-97eb-a20ae7818e6a/Western-Australia-20230310001457.zip) and [Timor and Arafura Seas](https://coral-atlas-user-downloads-prod.storage.googleapis.com/1dd3f53b-3ca0-44a1-b65f-eb131cae298f/Timor---Arafura-Seas-20230310000037.zip). Save and unzip these to `data/in-3p/AllenCoralAtlas/WA` and `data/in-3p/AllenCoralAtlas/Timor-Arafura`. Note: If you want to save them to a different folder, but still have the QGIS files work then use a symbolic link. 
