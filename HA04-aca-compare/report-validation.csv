@@ -1,0 +1,79 @@
+table,region,objective,class_num,reference_n,correct
+A1,Shark Bay,geomorphic,10,414,377
+A1,Shark Bay,geomorphic,11,384,302
+A1,Shark Bay,geomorphic,13,997,883
+A1,Shark Bay,geomorphic,14,994,849
+A1,Shark Bay,geomorphic,15,950,839
+A1,Shark Bay,geomorphic,16,942,926
+A1,Shark Bay,geomorphic,21,998,977
+A1,Shark Bay,geomorphic,22,844,714
+A1,Shark Bay,geomorphic,23,1000,994
+A1,Shark Bay,geomorphic,24,1000,995
+A2,Shark Bay,benthic,11,393,336
+A2,Shark Bay,benthic,12,1000,913
+A2,Shark Bay,benthic,13,991,968
+A2,Shark Bay,benthic,14,1000,942
+A2,Shark Bay,benthic,15,761,718
+A2,Shark Bay,benthic,19,922,735
+A3,West,geomorphic,10,760,612
+A3,West,geomorphic,11,994,885
+A3,West,geomorphic,13,999,714
+A3,West,geomorphic,14,985,706
+A3,West,geomorphic,15,1000,750
+A3,West,geomorphic,16,940,377
+A3,West,geomorphic,21,630,338
+A3,West,geomorphic,22,898,712
+A3,West,geomorphic,23,991,852
+A3,West,geomorphic,24,792,544
+A4,West,benthic,11,564,525
+A4,West,benthic,12,992,831
+A4,West,benthic,13,605,419
+A4,West,benthic,14,837,753
+A4,West,benthic,15,861,747
+A4,West,benthic,19,702,680
+A5,North West,geomorphic,10,370,263
+A5,North West,geomorphic,11,999,739
+A5,North West,geomorphic,13,990,582
+A5,North West,geomorphic,14,951,750
+A5,North West,geomorphic,15,938,402
+A5,North West,geomorphic,16,955,251
+A5,North West,geomorphic,21,439,207
+A5,North West,geomorphic,22,584,280
+A5,North West,geomorphic,23,971,885
+A5,North West,geomorphic,24,985,845
+A6,North West,benthic,11,543,468
+A6,North West,benthic,12,1000,569
+A6,North West,benthic,13,942,885
+A6,North West,benthic,14,980,887
+A6,North West,benthic,15,916,812
+A6,North West,benthic,18,941,17
+A6,North West,benthic,19,789,665
+A7,Gulf,geomorphic,10,163,134
+A7,Gulf,geomorphic,11,295,208
+A7,Gulf,geomorphic,13,981,865
+A7,Gulf,geomorphic,14,996,841
+A7,Gulf,geomorphic,15,985,904
+A7,Gulf,geomorphic,16,910,902
+A7,Gulf,geomorphic,21,548,497
+A7,Gulf,geomorphic,22,550,454
+A7,Gulf,geomorphic,23,136,124
+A7,Gulf,geomorphic,24,823,708
+A8,Gulf,benthic,11,536,469
+A8,Gulf,benthic,12,1000,959
+A8,Gulf,benthic,13,942,877
+A8,Gulf,benthic,14,979,903
+A8,Gulf,benthic,15,916,803
+A8,Gulf,benthic,19,789,665
+A9,Offshore,geomorphic,11,828,772
+A9,Offshore,geomorphic,13,746,682
+A9,Offshore,geomorphic,14,900,740
+A9,Offshore,geomorphic,21,992,986
+A9,Offshore,geomorphic,22,486,414
+A9,Offshore,geomorphic,23,194,186
+A9,Offshore,geomorphic,24,289,208
+A10,Offshore,benthic,11,716,655
+A10,Offshore,benthic,12,853,789
+A10,Offshore,benthic,13,969,838
+A10,Offshore,benthic,14,1000,991
+A10,Offshore,benthic,15,841,535
+A10,Offshore,benthic,19,1000,998

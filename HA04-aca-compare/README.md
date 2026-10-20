@@ -15,6 +15,7 @@ python -u HA04-aca-compare/compare.py
 python HA04-aca-compare/verify_results.py
 python HA04-aca-compare/make_tables.py
 python HA04-aca-compare/coverage.py
+python HA04-aca-compare/calibration_check.py
 ```
 
 ACA reference polygons and their metadata are supplied under `data/in-3p-mirror/ACA-ref/{WA-benthic,WA-geomorphic,Timor-benthic,Timor-geomorphic}`, with original filenames. They do not need to be downloaded again when using the distributed data bundle. For a code-only rebuild, follow the [global README's manual download instructions](../README.md#mirrored-third-party-data-and-manual-downloads). The downloader prints a reminder rather than attempting unreliable ACA reference URLs; it still downloads the existing coastline inputs. The old prototype's `ACA-reference` folder is not used.
@@ -34,6 +35,10 @@ Only tables presented in PAPER.md are written under `data/out/stats/HA04-aca-com
 | report_table.csv | Table 2: classification, region, paired count, agreement percentages, difference in percentage points, interval bounds and occupied 5 km block count |
 | report-table.md | Formatted Table 2 with caption and limitations |
 | class-alignment-table.md | Table 3: geomorphic agreement without Rocky Reef and Terrestrial Reef Flat points |
+| calibration-check.csv | Table 4: UQ reported validation accuracy, class-weighted final-map agreement at calibration points, their difference with approximate intervals, and the Table 2 UQ minus ACA difference |
+| calibration-check-table.md | Formatted Table 4 with caption |
+
+`report-validation.csv` in this folder holds the per-class reference totals and correct counts transcribed from the ten report validation confusion matrices (Appendix D). `calibration_check.py` reads it with the working `points.csv` and `summary.csv`, so run it after `compare.py`.
 
 Intermediate calculations and verification records are written to `working/HA04-aca-compare`. They are not distributed with the dataset or tracked in Git. Rerun the scripts to recreate them. The point file is retained here for spatial inspection and verification.
 
@@ -49,6 +54,7 @@ Intermediate calculations and verification records are written to `working/HA04-
 | coverage-table.md | Primary regional exclusion and coverage counts |
 | sensitivity-table.md | Paired effects and sample sizes for the 0, 50 and 100 m buffers |
 | coverage-area.csv | Full area calculations, including ACA area, intersection area and ACA area outside UQ |
+| calibration-check.csv | Full calibration check, including unweighted agreement, agreement counting set-aside classes as errors, and set-aside counts |
 
 Shark Bay is sampled into points.csv but excluded from the comparison statistics because ACA maps less than 1% of its habitat area. `coverage.py` needs the IMCRA bioregions from `A01-download-analysis-data.py` and writes temporary rasters to `working/HA04-aca-compare`.
 
